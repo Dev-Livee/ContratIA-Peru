@@ -11,6 +11,8 @@ import ObraCard from '@/components/Citizen/ObraCard';
 import ObrasStatsDashboard from '@/components/Citizen/ObrasStatsDashboard';
 import SkeletonCard from '@/components/Common/SkeletonCard';
 import EmptyState from '@/components/Common/EmptyState';
+import ErrorState from '@/components/Common/ErrorState';
+import VizMessage from '@/components/Common/VizMessage';
 import { useObras } from '@/components/hooks/useObras';
 import { DISTRICTS, RUBROS, OBRA_STATUS } from '@/utils/constants';
 import { formatCurrency } from '@/utils/helpers';
@@ -23,7 +25,7 @@ export default function ObrasBusqueda() {
   const [search, setSearch] = useState('');
   const [maxBudget, setMaxBudget] = useState(10);
 
-  const { data: obras, isLoading } = useObras({ distrito, status, rubro, search });
+  const { data: obras, isLoading, isError, refetch } = useObras({ distrito, status, rubro, search });
 
   const filtered = (obras ?? []).filter(o => o.presupuesto <= maxBudget * 1_000_000);
 
@@ -96,12 +98,16 @@ export default function ObrasBusqueda() {
             </Flex>
 
             {isLoading && (
-              <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} spacing={4}>
-                {[1, 2, 3, 4, 5, 6].map(i => <SkeletonCard key={i} hasImage lines={3} />)}
-              </SimpleGrid>
+              <Flex direction="column" align="center" py={8}>
+                <VizMessage pose="searching" message="Buscando la mejor información para ti..." size={100} />
+              </Flex>
             )}
 
-            {!isLoading && filtered.length === 0 && (
+            {!isLoading && isError && (
+              <ErrorState onRetry={() => refetch()} />
+            )}
+
+            {!isLoading && !isError && filtered.length === 0 && (
               <EmptyState
                 title="No encontré coincidencias"
                 description="Probemos otra búsqueda o cambia los filtros."
@@ -109,7 +115,7 @@ export default function ObrasBusqueda() {
               />
             )}
 
-            {!isLoading && filtered.length > 0 && (
+            {!isLoading && !isError && filtered.length > 0 && (
               <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} spacing={4}>
                 {filtered.map((obra, i) => <ObraCard key={obra.id} obra={obra} index={i} />)}
               </SimpleGrid>

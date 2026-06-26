@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiBarChart2, FiHash, FiMapPin, FiSearch } from 'react-icons/fi';
 import PublicNavbar from '@/components/Layout/PublicNavbar';
 import Hero3DBackground from '@/components/Common/Hero3DBackground';
+import VizMessage from '@/components/Common/VizMessage';
 import { DISTRICTS } from '@/utils/constants';
 
 export default function Landing() {
@@ -125,6 +126,13 @@ export default function Landing() {
             </Box>
           ))}
         </SimpleGrid>
+      </Container>
+
+      {/* Viz greeting */}
+      <Container maxW="900px" pb={10}>
+        <Flex justify="center">
+          <VizMessage pose="greeting" message="¡Hola! Soy Viz, tu asistente de transparencia. Te ayudo a encontrar información de obras públicas." size={90} />
+        </Flex>
       </Container>
 
       {/* Footer bar */}
