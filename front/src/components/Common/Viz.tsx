@@ -1,10 +1,6 @@
 import { Box, Image } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
 
-/**
- * Viz — mascota de ContrataIA Perú.
- * Poses controladas via animación CSS sobre una imagen única.
- */
 export type VizPose =
   | 'greeting'    // Saludo — inicio de sesión
   | 'thinking'    // Pensando — comparando empresas
@@ -57,7 +53,7 @@ export default function Viz({ pose, size = 120 }: VizProps) {
   return (
     <Box w={pxSize} h={pxSize} flexShrink={0}>
       <Image
-        src="/viz.png"
+        src={`/viz/${pose}.png`}
         alt={`Viz — ${pose}`}
         w="100%"
         h="100%"
