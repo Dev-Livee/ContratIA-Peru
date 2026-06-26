@@ -1,261 +1,429 @@
-﻿# ContrataIA Perú
+# ContrataIA Perú
 
-> **Plataforma Inteligente para la Búsqueda, Seguimiento y Evaluación de Contrataciones Públicas**
->
-> *"Contrata con confianza. Decide con inteligencia."*
->
-> Desarrollado en el **Torneo de VibeCoding — DSC PUCP, 26 de junio de 2026**
+> Plataforma Inteligente para la Gestión, Evaluación y Seguimiento de Contrataciones Públicas y Privadas
+
+**Eslogan:** *"Contrata con confianza. Decide con inteligencia."*
 
 ---
 
-## 📁 Estructura del Proyecto
+## 1. Introducción
+
+ContrataIA Perú es una plataforma web SaaS diseñada para modernizar el proceso de selección y seguimiento de proveedores en proyectos públicos y privados.
+
+La plataforma integra información oficial del Estado Peruano, inteligencia artificial y herramientas colaborativas para ayudar a las organizaciones a tomar decisiones informadas antes de contratar una empresa.
+
+A diferencia de los sistemas tradicionales, ContrataIA no solo consulta información pública, sino que administra todo el ciclo de evaluación, comparación, selección, contratación y seguimiento de proveedores.
+
+---
+
+## 2. Problemática
+
+Actualmente, las entidades públicas y empresas privadas enfrentan diversos desafíos durante los procesos de contratación:
+
+* Información dispersa entre múltiples entidades gubernamentales
+* Dificultad para evaluar objetivamente a los proveedores
+* Procesos manuales para comparar empresas
+* Ausencia de indicadores automáticos de riesgo
+* Escasa trazabilidad después de adjudicar un contrato
+* Ciudadanos con poca visibilidad del avance de los proyectos públicos
+
+Estas limitaciones incrementan el tiempo de evaluación, dificultan la toma de decisiones y reducen la transparencia durante la ejecución de los proyectos.
+
+---
+
+## 3. Objetivo
+
+Crear una plataforma inteligente que permita gestionar completamente el proceso de contratación, desde la evaluación inicial de proveedores hasta el seguimiento del proyecto adjudicado, utilizando datos oficiales e inteligencia artificial.
+
+---
+
+## 4. Propuesta de Valor
+
+ContrataIA reúne información oficial, herramientas colaborativas e inteligencia artificial en un solo sistema.
+
+**Permite:**
+* Evaluar proveedores
+* Comparar empresas
+* Analizar riesgos
+* Gestionar documentos
+* Registrar decisiones
+* Monitorear el avance de los contratos
+* Ofrecer transparencia mediante un seguimiento público
+
+Todo el proceso queda documentado, facilitando auditorías y fortaleciendo la confianza entre instituciones, empresas y ciudadanos.
+
+---
+
+## 5. Usuarios del Sistema
+
+### Entidad Pública / Municipalidad
+
+Responsable de crear y gestionar procesos de contratación.
+
+**Capacidades:**
+* Crear proyectos
+* Buscar empresas
+* Comparar proveedores
+* Analizar riesgos
+* Consultar recomendaciones de IA
+* Seleccionar empresa ganadora
+* Firmar digitalmente la adjudicación
+* Subir documentos
+* Gestionar cronogramas
+* Registrar hitos
+* Generar código único de obra
+* Actualizar estado de ejecución
+
+### Empresa Privada
+
+Proveedor que participa en procesos de contratación.
+
+**Capacidades:**
+* Registrar su empresa
+* Administrar su perfil
+* Mostrar experiencia
+* Gestionar certificaciones
+* Responder solicitudes
+* Subir documentación técnica
+* Consultar evaluaciones históricas
+* Participar en procesos de contratación
+
+### Ciudadano
+
+Usuario sin autenticación para consultar proyectos públicos.
+
+**Capacidades:**
+* Buscar obras por distrito
+* Ingresar código único de obra para ver detalles
+* Visualizar estado del proyecto
+* Consultar empresa adjudicada
+* Revisar cronograma
+* Conocer porcentaje de avance
+* Descargar documentos públicos
+* Ver fotografías del avance
+* Revisar historial de cambios
+* Consultar fechas de inicio y término
+
+La información se presenta como una línea de tiempo similar al seguimiento de un pedido en una tienda en línea:
 
 ```
-ContratIA-Peru/
-├── front/                   → Next.js 14 (App Router) — UI + API Routes + Server Actions
-├── docs/
-│   ├── propuesta.md         → Propuesta de producto completa
-│   ├── erd.md               → Modelo de datos (ERD Mermaid)
-│   └── adr/
-│       └── ADR-001-modelo-de-datos.md
-├── .github/
-│   └── agents/              → Agentes IA especializados (Copilot Chat)
-└── README.md                → Este archivo
+Proyecto creado
+     ↓
+Evaluación de empresas
+     ↓
+Empresa seleccionada
+     ↓
+Contrato firmado
+     ↓
+Inicio de obra
+     ↓
+25% → 50% → 75%
+     ↓
+Obra finalizada
 ```
 
 ---
 
-## 🎯 El Problema
+## 6. Flujo General
 
-El Estado peruano gasta **S/ 70,000 millones al año** en compras públicas. Sin embargo:
+**Paso 1:** La entidad crea un proyecto  
+Ejemplo: *Construcción del Puente San Martín*
 
-- La información está dispersa entre SEACE, OSCE, SUNAT y OEFA.
-- No existe una vista unificada por **obra individual** con presupuesto, proveedor y avance en lenguaje ciudadano.
-- Los ciudadanos no pueden buscar obras por su **distrito** ni compartirlas fácilmente.
-- No hay forma rápida de saber si el proveedor adjudicado tiene **sanciones, multas o deuda tributaria**.
-- El Tablero oficial del OECE (Power BI) es estadístico y agregado — no permite seguir una obra específica.
+**Paso 2:** Define presupuesto, rubro, ubicación, plazo y requisitos técnicos
 
----
-
-## 💡 La Solución
-
-**ContrataIA Perú** permite que cualquier ciudadano, en 30 segundos:
-
-1. **Busque una obra** por código, distrito, entidad o nombre.
-2. **Vea su seguimiento** — línea de tiempo tipo "tracking de pedido" con presupuesto, estado y proveedor.
-3. **Consulte el semáforo de riesgo** del proveedor adjudicado (verde / amarillo / rojo) cruzando SUNAT + OSCE + OEFA.
-4. **Compare 2–3 proveedores** lado a lado en una tabla de indicadores.
-5. **Comparta la obra** vía URL pública.
-6. **Se suscriba** a alertas de un distrito o entidad, o **denuncie** irregularidades con número de seguimiento.
+**Paso 3:** Busca proveedores. Cada empresa obtiene automáticamente una ficha técnica.
 
 ---
 
-## 👥 Roles del Sistema
+## 7. Perfil Inteligente del Proveedor
 
-El MVP usa **3 roles únicamente** (sin RBAC granular, sin OAuth2, sin 2FA):
+Cada proveedor cuenta con una evaluación basada en múltiples criterios:
 
-| Rol | Autenticación | Capacidades |
-|---|---|---|
-| `ROLE_CIUDADANO` | **Sin login** — acceso público total | Busca, ve obras, compara proveedores. Email opcional para alertas (magic link). |
-| `ROLE_EMPRESA` | Magic link al email del RUC | Administra su perfil público: descripción, rubros, contacto, certificaciones. |
-| `ROLE_ADMIN` | Magic link (email en allowlist) | Modera denuncias y perfiles de empresa reportados. |
+### Información General
+* Razón social
+* RUC
+* Estado SUNAT
+* Antigüedad
+* Representante legal
 
----
+### Experiencia
+* Número de contratos
+* Monto total contratado
+* Rubros donde tiene experiencia
+* Regiones donde ha trabajado
 
-## 🔍 Flujo Principal del Ciudadano
+### Indicadores
+* Sanciones OSCE
+* Multas OEFA
+* Procesos abiertos
+* Cumplimiento tributario
+* Historial contractual
 
-```
-┌─────────────────────────────────────────────────┐
-│  Buscar una obra                                │
-│                                                 │
-│  Por código:    ocds-dgv273-seacev3-2024-28-148 │
-│  Por distrito:  "Ate" / "San Borja"             │
-│  Por entidad:   "Municipalidad de Miraflores"   │
-│  Por nombre:    "Puente San Martín"             │
-└──────────────────────┬──────────────────────────┘
-                       ▼
-┌─────────────────────────────────────────────────┐
-│  Lista de obras                                 │
-│  Código · Título · Entidad · Monto · Estado     │
-└──────────────────────┬──────────────────────────┘
-                       ▼
-┌─────────────────────────────────────────────────┐
-│  Detalle de la obra (URL pública)               │
-│                                                 │
-│  Línea de tiempo:                               │
-│  ● Planificación                                │
-│  ● Convocatoria — 12/03/2026                    │
-│  ● Adjudicada — Constructora XYZ S.A.C.         │
-│  ○ En ejecución (45%)                           │
-│  ○ Finalizada                                   │
-│                                                 │
-│  Presupuesto: S/ 2,450,000                      │
-│                                                 │
-│  Proveedor: Constructora XYZ S.A.C.             │
-│  🟡 Riesgo MEDIO                               │
-│  · SUNAT activo y habido                        │
-│  · 1 multa OSCE 2024                            │
-│  · Sin sanciones ambientales                    │
-│                                                 │
-│  [Comparar]  [Denunciar]                        │
-│  [Suscribirme a este distrito]                  │
-└─────────────────────────────────────────────────┘
-```
+### Indicadores Técnicos
+* Tiempo promedio de ejecución
+* Cumplimiento de plazos
+* Índice de retrasos
+* Índice de cumplimiento documental
+* Nivel de especialización según el rubro
 
 ---
 
-## 🆚 Comparador de Proveedores
+## 8. Comparador Inteligente
+
+La plataforma permite comparar múltiples empresas en una vista integrada:
 
 | Indicador | Empresa A | Empresa B | Empresa C |
-|---|---|---|---|
-| Estado SUNAT | Activo · Habido | Activo · Habido | Activo · No habido |
-| Sanciones OSCE activas | 0 | 1 | 3 |
-| Multas OSCE | 0 | 1 | 5 |
-| Sanciones OEFA | 0 | 0 | 2 |
-| Deuda coactiva SUNAT | No | No | Sí |
-| **Semáforo** | 🟢 BAJO | 🟡 MEDIO | 🔴 ALTO |
+|-----------|-----------|-----------|-----------|
+| Experiencia | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
+| Riesgo | Bajo | Medio | Alto |
+| Contratos similares | 120 | 15 | 84 |
+| Tiempo promedio | 98% | 80% | 70% |
+| Especialización | Excelente | Buena | Regular |
 
 ---
 
-## 🔌 APIs Integradas
+## 9. Inteligencia Artificial
 
-### Fuente principal — [latinfo.dev](https://latinfo.dev)
-Una sola integración que agrega SEACE, OSCE, SUNAT y OEFA con autenticación única:
+La IA analiza automáticamente:
+* Especialización
+* Experiencia
+* Historial contractual
+* Cumplimiento tributario
+* Sanciones
+* Desempeño histórico
+* Riesgos asociados al proyecto
 
-| Endpoint | Datos |
-|---|---|
-| `GET /pe/licitaciones?q=&buyer=&status=&min_amount=` | 900K+ licitaciones SEACE (OCDS 1.1) |
-| `GET /pe/ruc/{ruc}` | KYB cross-source: SUNAT + OSCE + OEFA en un solo response |
-| `GET /pe/sunat/padron/ruc/{ruc}` | Estado tributario, condición, ubigeo |
-| `GET /pe/sunat/coactiva/ruc/{ruc}` | Deuda tributaria activa |
-| `GET /pe/osce/sanctioned/ruc/{ruc}` | Inhabilitación OSCE activa |
-| `GET /pe/osce/fines/ruc/{ruc}` | Multas a contratistas |
-| `GET /pe/osce/penalidades/ruc/{ruc}` | Penalidades contractuales |
-| `GET /pe/oefa/sanctions/ruc/{ruc}` | Sanciones ambientales firmes |
+**Genera:**
+* Risk Score
+* Fortalezas
+* Debilidades
+* Recomendaciones
+* Justificación técnica
 
-### Servicios adicionales
-| Servicio | Uso |
-|---|---|
-| **Resend** | Magic links y alertas por email (3,000/mes gratis) |
-
----
-
-## 🛠️ Stack Tecnológico
-
-| Capa | Tecnología | Justificación |
-|---|---|---|
-| Frontend + API + Server Actions | **Next.js 14 (App Router) + TypeScript** | Un solo repo, deploy en Vercel en minutos, Server Components para SEO de páginas públicas de obras |
-| UI | **Tailwind CSS + shadcn/ui** | Componentes accesibles listos, sin tiempo en diseño base |
-| Base de datos | **PostgreSQL — Neon (free tier)** | Soporta `jsonb` para snapshots crudos de latinfo.dev |
-| ORM | **Prisma** | Migraciones tipadas y cliente TypeScript generado |
-| Deploy | **Vercel** | Mencionado en las bases del torneo; deploy en un comando |
+**Ejemplo:**
+> "La Empresa A presenta el mejor perfil para un proyecto de infraestructura vial debido a su amplia experiencia en contratos similares, bajo índice de incumplimientos y ausencia de sanciones vigentes."
 
 ---
 
-## 🗄️ Modelo de Datos (6 entidades)
+## 10. Gestión Documental
 
-| Entidad | Propósito |
-|---|---|
-| `subscriber` | Ciudadano con email verificado para alertas (magic link, sin password) |
-| `subscription` | Qué vigila — entidad / distrito / RUC — y umbral de riesgo para alertar |
-| `provider_snapshot` | Caché del perfil 360° de un RUC: SUNAT + OSCE + OEFA + semáforo calculado |
-| `tender_snapshot` | Caché de obra/licitación SEACE con `ocid`, `ubigeo`, `buyer_name`, `status`, `amount` |
-| `alert` | Bitácora inmutable de alertas enviadas con evidencia reproducible |
-| `complaint` | Denuncia ciudadana con `tracking_code` único (admite anónimas) |
+Cada proyecto permite almacenar:
+* Bases
+* Contratos
+* Adendas
+* Informes técnicos
+* Actas
+* Expedientes
+* Fotografías
+* Certificados
+* Firmas digitales
 
-Ver diagrama completo en [`/docs/erd.md`](./docs/erd.md)
-Ver decisiones en [`/docs/adr/ADR-001-modelo-de-datos.md`](./docs/adr/ADR-001-modelo-de-datos.md)
-
----
-
-## 🔐 Seguridad
-
-- **HTTPS** forzado por Vercel.
-- **Magic link** (token único, expiración 15 min) para `ROLE_EMPRESA` y `ROLE_ADMIN`.
-- **Rate limiting** por IP en búsquedas y en el endpoint de suscripción.
-- **Allowlist de emails admin** en variable de entorno — nunca en código.
-- **Sin PII de personas naturales** más allá del email del suscriptor.
-- **Solo personas jurídicas** (RUC `20*`) en los datos consultados.
-- **API keys** (latinfo, Resend) en variables de entorno de Vercel.
-- **Denuncias anónimas** permitidas (`subscriber_id` nullable).
+Todo queda versionado para mantener trazabilidad completa.
 
 ---
 
-## 📋 Rúbrica de Evaluación
+## 11. Seguimiento del Proyecto
 
-| Criterio | Peso | Cómo lo cubre ContrataIA Perú |
-|---|---|---|
-| **Arquitectura e Ingeniería** | 40% | ERD 6 entidades + ADR-001 + diagramas C4 + stack justificado |
-| **Funcionalidad y Despliegue** | 30% | Datos reales desde latinfo.dev desde el día 1 · Deploy en Vercel |
-| **UX/UI y Adaptación Creativa** | 15% | Semáforo visual · Línea de tiempo · Comparador lado a lado |
-| **Pitch y Caso de Negocio** | 15% | S/70Bn/año · 9.2K empresas inhabilitadas · API pública validada |
+Una vez adjudicado, la entidad administra:
+* Avance físico
+* Avance financiero
+* Hitos
+* Entregables
+* Evidencias
+* Incidencias
+* Cronograma
 
----
-
-## 📦 Entregables del Torneo
-
-- [x] ERD del modelo de datos — [`/docs/erd.md`](./docs/erd.md)
-- [x] ADR-001 modelo de datos — [`/docs/adr/ADR-001-modelo-de-datos.md`](./docs/adr/ADR-001-modelo-de-datos.md)
-- [x] Propuesta de producto — [`/docs/propuesta.md`](./docs/propuesta.md)
-- [ ] Diagramas de arquitectura C4 — `/docs/architecture.md`
-- [ ] ADR-002 stack tecnológico
-- [ ] Código frontend en `/front/`
-- [ ] Tests automatizados (happy path + error case)
-- [ ] URL de producción funcional
-- [ ] GitHub Release "Prototipo de arquitectura"
-- [ ] GitHub Release "Entrega final"
-- [ ] Diapositivas para pitch
+Cada actualización queda registrada en tiempo real.
 
 ---
 
-## 👥 Equipo
+## 12. Código Único de Obra
 
-| Nombre | Rol | GitHub |
-|---|---|---|
-| | | |
-| | | |
-| | | |
+Cada proyecto genera automáticamente un código único de obra.
+
+### Opción 1: Búsqueda por Distrito
+
+El ciudadano ingresa a la plataforma y puede:
+* Seleccionar su distrito
+* Ver listado de todas las obras cercanas en ejecución
+* Filtrar por estado, rubro o presupuesto
+* Hacer clic en cualquier obra para ver detalles
+
+### Opción 2: Código Directo
+
+El ciudadano ingresa el código único de obra y accede inmediatamente a:
+* Empresa contratada
+* Presupuesto
+* Fechas de inicio y término
+* Avance actual (%)
+* Documentos públicos
+* Fotografías de la ejecución
+* Línea de tiempo
+* Historial de cambios
+
+**No requiere iniciar sesión.**
 
 ---
 
-## 🔗 Enlaces
+## 13. Sistema de Notificaciones
 
-| | |
-|---|---|
-| **Producción** | URL pendiente |
-| **Repositorio** | https://github.com/Dev-Livee/ContratIA-Peru |
-| **Propuesta de producto** | [/docs/propuesta.md](./docs/propuesta.md) |
-| **Modelo de datos** | [/docs/erd.md](./docs/erd.md) |
-| **ADRs** | [/docs/adr/](./docs/adr/) |
+**Canales:**
+* Correo
+* Aplicación
+* SMS (opcional)
+
+**Eventos:**
+* Nueva adjudicación
+* Retrasos
+* Cambio de empresa
+* Nuevo documento
+* Modificación del cronograma
+* Vencimiento de contrato
 
 ---
 
-## 🚀 Cómo correr localmente
+## 14. Seguridad
 
-```bash
-# 1. Clona el repositorio
-git clone https://github.com/Dev-Livee/ContratIA-Peru.git
-cd ContratIA-Peru
+### Autenticación
+* JWT
+* Refresh Tokens
+* OAuth2 para futuras integraciones
 
-# 2. Instala dependencias
-cd front
-npm install
+### Registro
+Las entidades y empresas deben validar:
+* RUC
+* DNI del representante
+* Correo institucional
+* Autenticación mediante código OTP
 
-# 3. Configura variables de entorno
-cp .env.example .env.local
-# Editar .env.local con:
-#   LATINFO_API_KEY=lat_...
-#   RESEND_API_KEY=re_...
-#   DATABASE_URL=postgresql://...
+### Autorización
+**Modelo RBAC con roles:**
+* Administrador
+* Entidad Pública
+* Empresa
+* Ciudadano (sin autenticación)
 
-# 4. Aplica migraciones
-npx prisma migrate dev
+### Protección
+* HTTPS
+* Hash BCrypt
+* Encriptación AES para documentos sensibles
+* Validación de firmas digitales
+* Auditoría completa
+* Registro de actividad (logs)
+* Protección contra ataques de fuerza bruta
+* Rate Limiting
+* Doble factor de autenticación (2FA) para cuentas institucionales
 
-# 5. Levanta el servidor
-npm run dev
-# → http://localhost:3000
+---
+
+## 15. APIs Integradas
+
+### Estado Peruano
+* SEACE
+* OSCE
+* SUNAT
+* OEFA
+* Portal Nacional de Datos Abiertos
+
+### Internacionales
+* OpenCorporates
+* OpenSanctions
+* World Bank Open Data
+
+---
+
+## 16. Stack Tecnológico
+
+### Frontend
+* React
+* TypeScript
+* Tailwind CSS
+
+### Backend
+* Spring Boot
+* Spring Security
+* Spring AI
+* Spring Data JPA
+
+### Base de Datos
+* PostgreSQL
+* Redis
+
+### Almacenamiento
+* Amazon S3 o Azure Blob Storage
+
+### Infraestructura
+* Docker
+* GitHub Actions
+* Nginx
+
+---
+
+## 17. Arquitectura
+
+```
+React Frontend
+     ↓
+Spring Boot Backend
+     ↓
+Motor de Evaluación
+     ↓
+Motor IA (Claude API)
+     ↓
+Gestión Documental
+     ↓
+Sistema de Notificaciones
+     ↓
+PostgreSQL + Redis
+     ↓
+APIs del Estado + APIs Internacionales
 ```
 
 ---
 
-*Hackathon VibeCoding · DSC PUCP · 26 junio 2026 · Temática: Estado Peruano*
+## 18. Beneficios
+
+### Para Entidades Públicas
+* Reduce el tiempo de evaluación
+* Mejora la calidad de las decisiones
+* Centraliza toda la documentación
+* Facilita auditorías
+* Automatiza el seguimiento de proyectos
+
+### Para Empresas Privadas
+* Presenta un perfil técnico consolidado
+* Reduce la carga documental
+* Incrementa su visibilidad ante entidades públicas
+* Acceso a histórico de evaluaciones
+
+### Para Ciudadanos
+* Mayor transparencia en obras públicas
+* Seguimiento sencillo por código de obra
+* Búsqueda por distrito de proyectos cercanos
+* Acceso público al estado real de ejecución
+* Confianza en la gestión pública
+
+---
+
+## 19. Estado del Proyecto
+
+**Fase:** MVP - Fase 1 (Desarrollo Inicial)
+
+**Funcionalidades incluidas:**
+✅ Gestión completa de contratación  
+✅ Evaluación inteligente de proveedores  
+✅ Código único de obra  
+✅ Búsqueda por distrito  
+✅ Seguimiento público  
+✅ 3 roles principales implementados  
+
+**Próximas fases:**
+- Rol de Auditor y dashboards especializados
+- Predicción de retrasos y detección de anomalías
+- Aplicación móvil y APIs públicas
+
+---
+
+**Creado por:** [Minda Code](https://mindacode.com)  
+**Ubicación:** Lima, Perú  
+**Estado:** En desarrollo
