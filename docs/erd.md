@@ -1,6 +1,8 @@
 # Modelo de Datos - ContrataIA Perú
 
 > Generado en Sprint 0 a partir de la temática: **Estado Peruano** — Plataforma ciudadana de búsqueda, seguimiento y evaluación de contrataciones públicas (SEACE/OSCE/SUNAT/OEFA) vía API de latinfo.dev.
+>
+> **Alcance del MVP:** flujo `ROLE_CIUDADANO` únicamente. `ROLE_EMPRESA` descartado por restricción de tiempo (ver sección Fuera del MVP). `ROLE_ADMIN` no requiere entidad propia — opera sobre las mismas tablas.
 
 ## Diagrama ERD
 
@@ -150,7 +152,8 @@ erDiagram
 
 ## Fuera del MVP (futuro)
 
-- **`user_role` / `permission`**: el MVP no distingue tipos de usuario (no hay admin de plataforma en el flujo ciudadano). Se postpone hasta que exista backoffice.
+- **`ROLE_EMPRESA` / `empresa_profile`**: descartado del MVP por costo/tiempo. Requeriría validación de RUC + magic link propio + formulario de perfil + storage. Entra en Roadmap V1.0+.
+- **`user_role` / `permission`**: `ROLE_ADMIN` opera sobre las mismas tablas (`complaint`, `provider_snapshot`) sin entidad propia — acceso controlado por allowlist de emails en variable de entorno. No se modela tabla de roles en el MVP.
 - **`entity_snapshot`** (caché del perfil 360° de la entidad compradora): en el MVP la página de entidad se arma on-the-fly consultando `tender_snapshot` filtrados por `buyer_ruc` + endpoint `/pe/osce/entidades/ruc/{ruc}` sin persistir. Se agregará si el costo de API lo justifica.
 - **`audit_log` / `metrics`**: queda fuera; logging operativo va a infra (Vercel/observabilidad), no a la BD de dominio.
 - **`alert_delivery_attempt`**: en el MVP `alert.sent_at` es suficiente. Reintentos y bounces se modelarán si el canal email da problemas.
