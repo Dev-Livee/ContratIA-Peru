@@ -14,7 +14,6 @@ import EmptyState from '@/components/Common/EmptyState';
 import { useObras } from '@/components/hooks/useObras';
 import { DISTRICTS, RUBROS, OBRA_STATUS } from '@/utils/constants';
 import { formatCurrency } from '@/utils/helpers';
-import { FiMapPin } from 'react-icons/fi';
 
 export default function ObrasBusqueda() {
   const [params] = useSearchParams();
@@ -104,9 +103,9 @@ export default function ObrasBusqueda() {
 
             {!isLoading && filtered.length === 0 && (
               <EmptyState
-                icon={FiMapPin}
-                title="No se encontraron obras"
-                description="Prueba cambiando los filtros o seleccionando un distrito diferente."
+                title="No encontré coincidencias"
+                description="Probemos otra búsqueda o cambia los filtros."
+                vizPose="curious"
               />
             )}
 

@@ -1,22 +1,21 @@
-import { Flex, Spinner, Text } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
+import VizMessage from './VizMessage';
 
 interface Props {
   label?: string;
   fullScreen?: boolean;
 }
 
-export default function LoadingSpinner({ label = 'Cargando...', fullScreen }: Props) {
+export default function LoadingSpinner({ label = 'Las mejores decisiones toman unos segundos más.', fullScreen }: Props) {
   return (
     <Flex
       direction="column"
       align="center"
       justify="center"
-      gap={3}
       minH={fullScreen ? '100vh' : '200px'}
       w="100%"
     >
-      <Spinner size="xl" color="brand.primaryDark" thickness="3px" />
-      <Text color="gray.500" fontSize="sm">{label}</Text>
+      <VizMessage pose="meditating" message={label} size={100} />
     </Flex>
   );
 }
