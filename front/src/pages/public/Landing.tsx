@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiBarChart2, FiHash, FiMapPin, FiSearch } from 'react-icons/fi';
 import PublicNavbar from '@/components/Layout/PublicNavbar';
+import Hero3DBackground from '@/components/Common/Hero3DBackground';
 import { DISTRICTS } from '@/utils/constants';
 
 export default function Landing() {
@@ -28,10 +29,11 @@ export default function Landing() {
       <PublicNavbar />
 
       {/* Hero */}
-      <Box bg="white" py={{ base: 16, md: 24 }} textAlign="center">
-        <Container maxW="720px">
+      <Box position="relative" bg="white" py={{ base: 16, md: 24 }} textAlign="center" overflow="hidden">
+        <Hero3DBackground />
+        <Container maxW="720px" position="relative" zIndex={1}>
           <VStack spacing={5}>
-            <Box px={3} py={1} bg="brand.100" borderRadius="full" display="inline-flex">
+            <Box px={3} py={1} bg="brand.100" borderRadius="full" display="inline-flex" backdropFilter="blur(8px)">
               <Text fontSize="xs" fontWeight="600" color="brand.700">Plataforma de transparencia pública</Text>
             </Box>
             <Heading
@@ -42,7 +44,7 @@ export default function Landing() {
             >
               Conoce las obras públicas de tu distrito
             </Heading>
-            <Text color="gray.500" fontSize={{ base: 'md', md: 'lg' }} maxW="480px">
+            <Text color="gray.600" fontSize={{ base: 'md', md: 'lg' }} maxW="480px">
               Transparencia en tiempo real. Sin necesidad de registrarte.
             </Text>
           </VStack>

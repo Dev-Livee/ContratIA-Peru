@@ -8,6 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import { FiSearch } from 'react-icons/fi';
 import PublicNavbar from '@/components/Layout/PublicNavbar';
 import ObraCard from '@/components/Citizen/ObraCard';
+import ObrasStatsDashboard from '@/components/Citizen/ObrasStatsDashboard';
 import SkeletonCard from '@/components/Common/SkeletonCard';
 import EmptyState from '@/components/Common/EmptyState';
 import { useObras } from '@/components/hooks/useObras';
@@ -84,6 +85,10 @@ export default function ObrasBusqueda() {
 
           {/* Results */}
           <Box flex={1} minW={0}>
+            {!isLoading && filtered.length > 0 && (
+              <ObrasStatsDashboard obras={filtered} />
+            )}
+
             <Flex justify="space-between" align="center" mb={4}>
               <Heading size="md" color="gray.800">
                 {isLoading ? 'Buscando...' : `${filtered.length} obra${filtered.length !== 1 ? 's' : ''} encontrada${filtered.length !== 1 ? 's' : ''}`}

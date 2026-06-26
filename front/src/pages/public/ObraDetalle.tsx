@@ -13,7 +13,7 @@ import { useObra } from '@/components/hooks/useObras';
 import { formatCurrency, formatDate } from '@/utils/helpers';
 
 export default function ObraDetalle() {
-  const { codigoObra } = useParams<{ codigoObra: string }>();
+  const { id: codigoObra } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: obra, isLoading, error } = useObra(codigoObra ?? '');
 
