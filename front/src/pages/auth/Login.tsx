@@ -28,10 +28,14 @@ export default function Login() {
     setApiError('');
     try {
       await login(data.email, data.password);
-      const role = data.email.includes('empresa') || data.email.includes('corp') ? 'company' : 'entity';
+      // role comes from backend response stored in AuthContext
+      const stored = localStorage.getItem('contratia_auth');
+      const parsed = stored ? JSON.parse(stored) : null;
+      const role = parsed?.user?.role;
       navigate(role === 'company' ? '/empresa/dashboard' : '/entidad/dashboard');
-    } catch {
-      setApiError('Credenciales incorrectas. Por favor, inténtalo nuevamente.');
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setApiError(msg ?? 'Credenciales incorrectas. Por favor, inténtalo nuevamente.');
     }
   };
 
@@ -114,9 +118,8 @@ export default function Login() {
 
           {/* Demo hint */}
           <Box bg="gray.50" borderRadius="lg" p={3}>
-            <Text fontSize="xs" color="gray.500" fontWeight="600" mb={1}>Cuentas demo:</Text>
-            <Text fontSize="xs" color="gray.500">Entidad: entidad@gob.pe / cualquier contraseña ≥8 chars</Text>
-            <Text fontSize="xs" color="gray.500">Empresa: empresa@corp.com / cualquier contraseña ≥8 chars</Text>
+            <Text fontSize="xs" color="gray.500" fontWeight="600" mb={1}>Demo: registra tu cuenta en /auth/registro</Text>
+            <Text fontSize="xs" color="gray.500">El sistema no requiere verificación por correo.</Text>
           </Box>
         </VStack>
       </Box>

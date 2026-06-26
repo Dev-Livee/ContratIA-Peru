@@ -39,7 +39,7 @@ export const REGIONES = [
   'Cusco', 'Junín', 'Lambayeque', 'Ica', 'Áncash',
 ] as const;
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 export const QUERY_KEYS = {
   OBRAS: 'obras',

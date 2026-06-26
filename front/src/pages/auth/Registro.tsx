@@ -42,7 +42,7 @@ function StepIndicator({ current }: { current: number }) {
 }
 
 export default function Registro() {
-  const { login } = useAuth();
+  const { register: registerAuth } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
   const [step, setStep] = useState(0);
@@ -75,13 +75,22 @@ export default function Registro() {
     setApiError('');
     try {
       setStep(1);
-      await new Promise(r => setTimeout(r, 1000));
+      await registerAuth({
+        tipoCuenta: data.tipoCuenta,
+        ruc: data.ruc,
+        razonSocial: data.razonSocial,
+        correo: data.correo,
+        dniRepresentante: data.dniRepresentante,
+        nombreRepresentante: data.nombreRepresentante,
+        password: data.password,
+      });
       setStep(2);
-      await login(data.correo, data.password);
+      toast({ title: '¡Cuenta creada!', description: 'Bienvenido a ContrataIA Perú', status: 'success', duration: 3000, position: 'top-right' });
       await new Promise(r => setTimeout(r, 800));
       navigate(data.tipoCuenta === 'empresa' ? '/empresa/dashboard' : '/entidad/dashboard');
-    } catch {
-      setApiError('Error al crear la cuenta. Inténtalo nuevamente.');
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setApiError(msg ?? 'Error al crear la cuenta. Verifica los datos e inténtalo nuevamente.');
       setStep(0);
     }
   };

@@ -3,18 +3,21 @@ import {
   Grid, Heading, HStack, Icon, Input, Select, Tag, TagCloseButton,
   TagLabel, Textarea, Text, useToast, VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FiPlus, FiSave } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContext';
+import { useEmpresaPerfil } from '@/components/hooks/useObras';
+import api from '@/services/api';
 import { perfilEmpresaSchema, type PerfilEmpresaSchema } from '@/utils/validators';
 import { RUBROS, REGIONES } from '@/utils/constants';
 
 export default function EmpresaPerfil() {
   const { user, updateUser } = useAuth();
   const toast = useToast();
-  const [rubros, setRubros] = useState<string[]>(['Infraestructura vial', 'Saneamiento']);
+  const { data: perfil } = useEmpresaPerfil();
+  const [rubros, setRubros] = useState<string[]>([]);
   const [regiones, setRegiones] = useState<string[]>(['Lima']);
   const [rubroInput, setRubroInput] = useState('');
   const [regionInput, setRegionInput] = useState('');
@@ -22,17 +25,31 @@ export default function EmpresaPerfil() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<PerfilEmpresaSchema>({
     resolver: zodResolver(perfilEmpresaSchema),
     defaultValues: {
-      representante: 'Carlos Ríos',
+      representante: '',
       correoContacto: user?.email ?? '',
-      rubros,
-      regiones,
-      descripcion: 'Empresa especializada en obras de infraestructura pública con más de 8 años de trayectoria.',
+      rubros: [],
+      regiones: ['Lima'],
+      descripcion: '',
     },
   });
+
+  useEffect(() => {
+    if (perfil) {
+      reset({
+        representante: perfil.representanteLegal ?? '',
+        correoContacto: perfil.email ?? user?.email ?? '',
+        rubros,
+        regiones,
+        descripcion: perfil.descripcion ?? '',
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [perfil]);
 
   const addRubro = () => {
     if (rubroInput && !rubros.includes(rubroInput)) { setRubros(r => [...r, rubroInput]); }
@@ -44,12 +61,22 @@ export default function EmpresaPerfil() {
   };
 
   const onSubmit = async (data: PerfilEmpresaSchema) => {
-    await new Promise(r => setTimeout(r, 700));
-    updateUser({ name: data.representante });
-    toast({ title: 'Perfil actualizado', status: 'success', duration: 2500, position: 'top-right' });
+    try {
+      await api.put('/empresa/perfil', {
+        representanteLegal: data.representante,
+        descripcion: data.descripcion,
+        telefono: perfil?.telefono ?? '',
+        sitioWeb: perfil?.sitioWeb ?? '',
+        sector: perfil?.sector ?? 'Construccion',
+      });
+      updateUser({ name: data.representante });
+      toast({ title: 'Perfil actualizado', status: 'success', duration: 2500, position: 'top-right' });
+    } catch {
+      toast({ title: 'Error al guardar', status: 'error', duration: 2500, position: 'top-right' });
+    }
   };
 
-  const completeness = Math.min(100, [user?.razonSocial, user?.ruc, rubros.length > 0, regiones.length > 0].filter(Boolean).length * 25);
+  const completeness = Math.min(100, [perfil?.razonSocial, perfil?.ruc, rubros.length > 0, perfil?.descripcion].filter(Boolean).length * 25);
 
   return (
     <VStack spacing={5} align="stretch">

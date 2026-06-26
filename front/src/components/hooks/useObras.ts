@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/utils/constants';
+import api from '@/services/api';
 
 export interface Obra {
   id: string;
@@ -164,25 +165,108 @@ export function useObras(filters?: ObraFilters) {
   return useQuery({
     queryKey: [QUERY_KEYS.OBRAS, filters],
     queryFn: async (): Promise<Obra[]> => {
-      await new Promise(r => setTimeout(r, 700));
-      return MOCK_OBRAS.filter(o => {
-        if (filters?.distrito && o.distrito !== filters.distrito) return false;
-        if (filters?.status && o.status !== filters.status) return false;
-        if (filters?.rubro && o.rubro !== filters.rubro) return false;
-        if (filters?.search && !o.nombre.toLowerCase().includes(filters.search.toLowerCase()) && !o.codigo.toLowerCase().includes(filters.search.toLowerCase())) return false;
-        return true;
+      const { buscarObras, mapLabelToEstado, adaptObra } = await import('@/services/publico');
+      const page = await buscarObras({
+        distrito: filters?.distrito || undefined,
+        estado: filters?.status ? mapLabelToEstado(filters.status) : undefined,
+        rubro: filters?.rubro || undefined,
+        size: 100,
       });
+      let obras = page.content.map(adaptObra);
+      if (filters?.search) {
+        const q = filters.search.toLowerCase();
+        obras = obras.filter(o =>
+          o.nombre.toLowerCase().includes(q) || o.codigo.toLowerCase().includes(q)
+        );
+      }
+      return obras;
     },
   });
 }
 
-export function useObra(id: string) {
+export function useObra(codigoUnico: string) {
   return useQuery({
-    queryKey: [QUERY_KEYS.OBRA, id],
+    queryKey: [QUERY_KEYS.OBRA, codigoUnico],
     queryFn: async (): Promise<Obra | null> => {
-      await new Promise(r => setTimeout(r, 500));
-      return MOCK_OBRAS.find(o => o.id === id || o.codigo === id) ?? null;
+      const { obtenerObraDetalle, adaptObraDetalle } = await import('@/services/publico');
+      try {
+        const dto = await obtenerObraDetalle(codigoUnico);
+        return adaptObraDetalle(dto);
+      } catch {
+        return null;
+      }
     },
-    enabled: !!id,
+    enabled: !!codigoUnico,
+  });
+}
+
+// ── Entidad: projects owned by the logged-in entidad ──────────────────────────
+export interface ProyectoEntidad {
+  id: string;
+  codigo: string;
+  titulo: string;
+  rubro: string;
+  distrito: string;
+  region: string;
+  presupuesto: number;
+  estado: string;
+  avanceFisico: number;
+  createdAt: string;
+}
+
+export function useProyectosEntidad() {
+  return useQuery({
+    queryKey: [QUERY_KEYS.PROYECTOS],
+    queryFn: async (): Promise<ProyectoEntidad[]> => {
+      const { data } = await api.get('/proyectos');
+      return (data as ProyectoEntidad[]).map((p: ProyectoEntidad) => ({
+        id: p.id,
+        codigo: p.codigo ?? '',
+        titulo: p.titulo,
+        rubro: p.rubro,
+        distrito: p.distrito,
+        region: p.region,
+        presupuesto: p.presupuesto,
+        estado: p.estado,
+        avanceFisico: p.avanceFisico ?? 0,
+        createdAt: p.createdAt,
+      }));
+    },
+  });
+}
+
+// ── Empresa: profile + assigned projects ──────────────────────────────────────
+export interface EmpresaPerfil {
+  id: string;
+  ruc: string;
+  razonSocial: string;
+  sector?: string;
+  telefono?: string;
+  sitioWeb?: string;
+  descripcion?: string;
+  representanteLegal?: string;
+  email?: string;
+}
+
+export function useEmpresaPerfil() {
+  return useQuery({
+    queryKey: ['empresa_perfil'],
+    queryFn: async (): Promise<EmpresaPerfil> => {
+      const { data } = await api.get('/empresa/perfil');
+      return data as EmpresaPerfil;
+    },
+  });
+}
+
+// Distritos from backend (for ObrasBusqueda dropdown)
+export function useDistritos() {
+  return useQuery({
+    queryKey: ['distritos'],
+    queryFn: async (): Promise<string[]> => {
+      const { listarDistritos } = await import('@/services/publico');
+      const list = await listarDistritos();
+      return list;
+    },
+    staleTime: 5 * 60 * 1000, // 5 min
   });
 }

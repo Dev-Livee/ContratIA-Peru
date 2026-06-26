@@ -5,7 +5,7 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiPlus, FiSearch } from 'react-icons/fi';
-import { useObras } from '@/components/hooks/useObras';
+import { useObras, useProyectosEntidad } from '@/components/hooks/useObras';
 import StatusBadge from '@/components/Common/StatusBadge';
 import { SkeletonTable } from '@/components/Common/SkeletonCard';
 import EmptyState from '@/components/Common/EmptyState';
@@ -17,7 +17,17 @@ export default function Proyectos() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [rubroFilter, setRubroFilter] = useState('');
-  const { data: obras, isLoading } = useObras({ status: statusFilter, rubro: rubroFilter, search });
+  const { data: proyectosRaw, isLoading } = useProyectosEntidad();
+  // Map backend ProyectoEntidad -> Obra shape for status filter
+  const obras = (proyectosRaw ?? []).filter(p => {
+    if (statusFilter && p.estado !== statusFilter) return false;
+    if (rubroFilter && p.rubro !== rubroFilter) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      if (!p.titulo.toLowerCase().includes(q) && !(p.codigo ?? '').toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
 
   return (
     <VStack spacing={5} align="stretch">
@@ -82,24 +92,23 @@ export default function Proyectos() {
                 {(obras ?? []).map(o => (
                   <Tr key={o.id} _hover={{ bg: 'gray.50' }} cursor="pointer"
                     onClick={() => navigate(`/entidad/proyectos/${o.id}`)}>
-                    <Td><Text fontSize="xs" fontFamily="mono" color="gray.400">{o.codigo}</Text></Td>
+                    <Td><Text fontSize="xs" fontFamily="mono" color="gray.400">{o.codigo || '—'}</Text></Td>
                     <Td>
-                      <Text fontWeight="500" fontSize="sm" color="gray.800" maxW="200px" noOfLines={1}>{o.nombre}</Text>
+                      <Text fontWeight="500" fontSize="sm" color="gray.800" maxW="200px" noOfLines={1}>{o.titulo}</Text>
                       <Text fontSize="xs" color="gray.400">{o.rubro} · {o.distrito}</Text>
                     </Td>
-                    <Td><StatusBadge status={o.status} size="sm" /></Td>
-                    <Td><Text fontSize="sm" color="gray.600" noOfLines={1} maxW="140px">{o.empresa || '—'}</Text></Td>
+                    <Td><StatusBadge status={o.estado} size="sm" /></Td>
+                    <Td><Text fontSize="sm" color="gray.600" noOfLines={1} maxW="140px">—</Text></Td>
                     <Td minW="120px">
                       <VStack spacing={1} align="start">
-                        <Text fontSize="xs" color="gray.500">{o.avance}%</Text>
-                        <Progress value={o.avance} size="xs" w="90px" colorScheme="brand" borderRadius="full" />
+                        <Text fontSize="xs" color="gray.500">{o.avanceFisico ?? 0}%</Text>
+                        <Progress value={o.avanceFisico ?? 0} size="xs" w="90px" colorScheme="brand" borderRadius="full" />
                       </VStack>
                     </Td>
-                    <Td><Text fontSize="sm" color="gray.500">{o.fechaFin ? formatDate(o.fechaFin) : '—'}</Text></Td>
+                    <Td><Text fontSize="sm" color="gray.500">{formatCurrency(o.presupuesto)}</Text></Td>
                     <Td onClick={e => e.stopPropagation()}>
                       <HStack spacing={1}>
                         <Button size="xs" variant="ghost" color="brand.700" onClick={() => navigate(`/entidad/proyectos/${o.id}`)}>Ver</Button>
-                        <Button size="xs" variant="ghost" color="gray.500">Editar</Button>
                       </HStack>
                     </Td>
                   </Tr>

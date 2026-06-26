@@ -5,7 +5,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { FiCheckCircle, FiClock, FiFolder, FiPlus, FiSearch, FiTrendingUp } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContext';
-import { useObras } from '@/components/hooks/useObras';
+import { useProyectosEntidad } from '@/components/hooks/useObras';
 import StatusBadge from '@/components/Common/StatusBadge';
 import { SkeletonTable } from '@/components/Common/SkeletonCard';
 import { formatCurrency } from '@/utils/helpers';
@@ -34,13 +34,13 @@ function StatCard({ label, value, icon, bg = 'brand.100', iconColor = 'brand.700
 export default function EntidadDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { data: obras, isLoading } = useObras();
+  const { data: obras, isLoading } = useProyectosEntidad();
 
   const stats = {
     total: obras?.length ?? 0,
-    evaluacion: obras?.filter(o => o.status === 'En evaluación').length ?? 0,
-    adjudicado: obras?.filter(o => o.status === 'Adjudicado').length ?? 0,
-    ejecucion: obras?.filter(o => o.status === 'En ejecución').length ?? 0,
+    evaluacion: obras?.filter(o => o.estado === 'EN_EVALUACION').length ?? 0,
+    adjudicado: obras?.filter(o => o.estado === 'ADJUDICADO').length ?? 0,
+    ejecucion: obras?.filter(o => o.estado === 'EN_EJECUCION').length ?? 0,
   };
 
   return (
@@ -89,15 +89,15 @@ export default function EntidadDashboard() {
                   <Tr key={o.id} _hover={{ bg: 'gray.50' }} cursor="pointer"
                     onClick={() => navigate(`/entidad/proyectos/${o.id}`)}>
                     <Td>
-                      <Text fontSize="sm" fontWeight="500" color="gray.800" maxW="220px" noOfLines={1}>{o.nombre}</Text>
+                      <Text fontSize="sm" fontWeight="500" color="gray.800" maxW="220px" noOfLines={1}>{o.titulo}</Text>
                       <Text fontSize="xs" color="gray.400">{o.distrito}</Text>
                     </Td>
-                    <Td><StatusBadge status={o.status} size="sm" /></Td>
-                    <Td><Text fontSize="sm" color="gray.600" noOfLines={1} maxW="160px">{o.empresa || '—'}</Text></Td>
+                    <Td><StatusBadge status={o.estado} size="sm" /></Td>
+                    <Td><Text fontSize="sm" color="gray.600" noOfLines={1} maxW="160px">—</Text></Td>
                     <Td minW="130px">
                       <VStack spacing={1} align="start">
-                        <Text fontSize="xs" color="gray.500">{o.avance}%</Text>
-                        <Progress value={o.avance} size="xs" w="110px" colorScheme="brand" borderRadius="full" />
+                        <Text fontSize="xs" color="gray.500">{o.avanceFisico ?? 0}%</Text>
+                        <Progress value={o.avanceFisico ?? 0} size="xs" w="110px" colorScheme="brand" borderRadius="full" />
                       </VStack>
                     </Td>
                     <Td><Text fontSize="sm">{formatCurrency(o.presupuesto)}</Text></Td>

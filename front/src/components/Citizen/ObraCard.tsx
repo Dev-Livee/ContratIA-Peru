@@ -27,7 +27,7 @@ export default function ObraCard({ obra, index = 0 }: Props) {
       cursor="pointer"
       _hover={{ boxShadow: 'md', transform: 'translateY(-2px)', borderColor: 'brand.200' }}
       transition="all 0.2s"
-      onClick={() => navigate(`/obras/${obra.id}`)}
+      onClick={() => navigate(`/obras/${obra.codigo}`)}
     >
       <Box h="160px" overflow="hidden" position="relative">
         <Image src={img} alt={obra.nombre} w="100%" h="100%" objectFit="cover" fallback={<Box h="160px" bg="gray.200" />} />

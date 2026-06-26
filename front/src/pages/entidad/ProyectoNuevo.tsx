@@ -9,8 +9,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiArrowRight, FiCheck, FiSave, FiUpload } from 'react-icons/fi';
 import { proyectoSchema, type ProyectoSchema } from '@/utils/validators';
-import { DISTRICTS, RUBROS } from '@/utils/constants';
+import { DISTRICTS, RUBROS, API_BASE_URL } from '@/utils/constants';
 import { formatCurrency } from '@/utils/helpers';
+import api from '@/services/api';
 
 const STEPS = ['Información', 'Requisitos', 'Confirmar'];
 
@@ -65,13 +66,34 @@ export default function ProyectoNuevo() {
   };
 
   const onSubmit = async (data: ProyectoSchema) => {
-    await new Promise(r => setTimeout(r, 900));
-    toast({
-      title: 'Proyecto publicado exitosamente',
-      description: `"${data.nombre}" está ahora en evaluación.`,
-      status: 'success', duration: 4000, isClosable: true, position: 'top-right',
-    });
-    navigate('/entidad/proyectos');
+    try {
+      // 1. Create project (BORRADOR)
+      const { data: created } = await api.post('/proyectos', {
+        titulo: data.nombre,
+        descripcion: data.descripcion,
+        presupuesto: data.presupuesto,
+        rubro: data.rubro,
+        distrito: data.distrito,
+        provincia: 'Lima',
+        region: 'Lima',
+        direccion: '',
+        fechaInicioPrevista: data.fechaInicio,
+        fechaFinPrevista: data.fechaFin,
+        plazoMeses: null,
+        requisitos: data.descripcionTecnica ?? '',
+      });
+      // 2. Publish immediately -> EN_EVALUACION (assigns codigoUnico)
+      await api.put(`/proyectos/${created.id}/estado`, { estado: 'EN_EVALUACION' });
+      toast({
+        title: 'Proyecto publicado exitosamente',
+        description: `"${data.nombre}" está ahora en evaluación.`,
+        status: 'success', duration: 4000, isClosable: true, position: 'top-right',
+      });
+      navigate('/entidad/proyectos');
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast({ title: 'Error al publicar', description: msg ?? 'Intenta de nuevo', status: 'error', duration: 4000, position: 'top-right' });
+    }
   };
 
   return (
