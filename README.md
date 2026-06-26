@@ -45,7 +45,7 @@ El Estado peruano gasta **S/ 70,000 millones al año** en compras públicas. Sin
 2. **Vea su seguimiento** — línea de tiempo tipo "tracking de pedido" con presupuesto, estado y proveedor.
 3. **Consulte el semáforo de riesgo** del proveedor adjudicado (verde / amarillo / rojo) cruzando SUNAT + OSCE + OEFA.
 4. **Compare 2–3 proveedores** lado a lado en una tabla de indicadores.
-5. **Comparta la obra** vía URL pública o código QR.
+5. **Comparta la obra** vía URL pública.
 6. **Se suscriba** a alertas de un distrito o entidad, o **denuncie** irregularidades con número de seguimiento.
 
 ---
@@ -56,7 +56,7 @@ El MVP usa **3 roles únicamente** (sin RBAC granular, sin OAuth2, sin 2FA):
 
 | Rol | Autenticación | Capacidades |
 |---|---|---|
-| `ROLE_CIUDADANO` | **Sin login** — acceso público total | Busca, ve obras, compara proveedores, escanea QR. Email opcional para alertas (magic link). |
+| `ROLE_CIUDADANO` | **Sin login** — acceso público total | Busca, ve obras, compara proveedores. Email opcional para alertas (magic link). |
 | `ROLE_EMPRESA` | Magic link al email del RUC | Administra su perfil público: descripción, rubros, contacto, certificaciones. |
 | `ROLE_ADMIN` | Magic link (email en allowlist) | Modera denuncias y perfiles de empresa reportados. |
 
@@ -80,7 +80,7 @@ El MVP usa **3 roles únicamente** (sin RBAC granular, sin OAuth2, sin 2FA):
 └──────────────────────┬──────────────────────────┘
                        ▼
 ┌─────────────────────────────────────────────────┐
-│  Detalle de la obra (URL pública + QR)          │
+│  Detalle de la obra (URL pública)               │
 │                                                 │
 │  Línea de tiempo:                               │
 │  ● Planificación                                │
@@ -97,7 +97,7 @@ El MVP usa **3 roles únicamente** (sin RBAC granular, sin OAuth2, sin 2FA):
 │  · 1 multa OSCE 2024                            │
 │  · Sin sanciones ambientales                    │
 │                                                 │
-│  [Resumen IA]  [Comparar]  [QR]  [Denunciar]   │
+│  [Comparar]  [Denunciar]                        │
 │  [Suscribirme a este distrito]                  │
 └─────────────────────────────────────────────────┘
 ```
@@ -136,9 +136,7 @@ Una sola integración que agrega SEACE, OSCE, SUNAT y OEFA con autenticación ú
 ### Servicios adicionales
 | Servicio | Uso |
 |---|---|
-| **OpenAI / Anthropic** | Resumen en lenguaje natural del perfil del proveedor |
 | **Resend** | Magic links y alertas por email (3,000/mes gratis) |
-| **`qrcode` npm** | Generación de QR por obra lado servidor |
 
 ---
 
@@ -174,11 +172,11 @@ Ver decisiones en [`/docs/adr/ADR-001-modelo-de-datos.md`](./docs/adr/ADR-001-mo
 
 - **HTTPS** forzado por Vercel.
 - **Magic link** (token único, expiración 15 min) para `ROLE_EMPRESA` y `ROLE_ADMIN`.
-- **Rate limiting** por IP en búsquedas y endpoint de resumen IA.
+- **Rate limiting** por IP en búsquedas y en el endpoint de suscripción.
 - **Allowlist de emails admin** en variable de entorno — nunca en código.
 - **Sin PII de personas naturales** más allá del email del suscriptor.
 - **Solo personas jurídicas** (RUC `20*`) en los datos consultados.
-- **API keys** (latinfo, OpenAI, Resend) en variables de entorno de Vercel.
+- **API keys** (latinfo, Resend) en variables de entorno de Vercel.
 - **Denuncias anónimas** permitidas (`subscriber_id` nullable).
 
 ---
@@ -189,7 +187,7 @@ Ver decisiones en [`/docs/adr/ADR-001-modelo-de-datos.md`](./docs/adr/ADR-001-mo
 |---|---|---|
 | **Arquitectura e Ingeniería** | 40% | ERD 6 entidades + ADR-001 + diagramas C4 + stack justificado |
 | **Funcionalidad y Despliegue** | 30% | Datos reales desde latinfo.dev desde el día 1 · Deploy en Vercel |
-| **UX/UI y Adaptación Creativa** | 15% | Semáforo visual · Línea de tiempo · QR compartible · Resumen IA |
+| **UX/UI y Adaptación Creativa** | 15% | Semáforo visual · Línea de tiempo · Comparador lado a lado |
 | **Pitch y Caso de Negocio** | 15% | S/70Bn/año · 9.2K empresas inhabilitadas · API pública validada |
 
 ---
@@ -247,7 +245,6 @@ npm install
 cp .env.example .env.local
 # Editar .env.local con:
 #   LATINFO_API_KEY=lat_...
-#   OPENAI_API_KEY=sk-...
 #   RESEND_API_KEY=re_...
 #   DATABASE_URL=postgresql://...
 

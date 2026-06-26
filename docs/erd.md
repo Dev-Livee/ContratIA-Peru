@@ -110,7 +110,7 @@ erDiagram
 ### TENDER_SNAPSHOT
 - **Propósito**: Caché de una obra/contrato SEACE consultado o detectado. Es la entidad central del flujo ciudadano: cada obra tiene un `ocid` único que actúa como código público de seguimiento. No replicamos todo SEACE; solo lo consultado o lo que disparó una alerta.
 - **Campos clave**:
-  - `ocid` — identificador OCDS 1.1 de la licitación (único en la fuente). Es el **código público de la obra**; se puede compartir por URL o QR.
+  - `ocid` — identificador OCDS 1.1 de la licitación (único en la fuente). Es el **código público de la obra**; se puede compartir por URL.
   - `buyer_ruc` — RUC de la entidad pública compradora.
   - `buyer_name` — nombre de la entidad compradora desnormalizado para mostrar en listas sin JOIN ni reparseo del `raw`.
   - `ubigeo` — código de ubigeo del comprador (departamento/provincia/distrito). **Habilita la búsqueda por distrito sin parsear el JSONB en cada query.** Indexado.

@@ -14,7 +14,7 @@
 - Que **empresas privadas** mantengan un perfil técnico consolidado y visible.
 - Que los **administradores** moderen denuncias ciudadanas y aseguren la calidad del contenido.
 
-A diferencia del Tablero oficial del OECE (Power BI agregado), ContrataIA Perú está pensada como una experiencia **ciudadana, individual y reproducible**: cada obra tiene su URL pública, su QR, su semáforo de riesgo y su comparativa de proveedores.
+A diferencia del Tablero oficial del OECE (Power BI agregado), ContrataIA Perú está pensada como una experiencia **ciudadana, individual y reproducible**: cada obra tiene su URL pública, su semáforo de riesgo y su comparativa de proveedores.
 
 ---
 
@@ -23,7 +23,7 @@ A diferencia del Tablero oficial del OECE (Power BI agregado), ContrataIA Perú 
 - Información dispersa en SEACE, OSCE, SUNAT y OEFA. El ciudadano no sabe dónde buscar.
 - No hay una vista por **obra individual** con presupuesto, proveedor y avance en lenguaje claro.
 - No existe una forma simple de **comparar dos proveedores** que postulan al mismo proyecto.
-- Las obras no se pueden compartir fácilmente (sin URL pública, sin QR).
+- Las obras no se pueden compartir fácilmente (sin URL pública).
 - Periodistas, vecinos y postulantes deben armar el rompecabezas a mano.
 
 ---
@@ -35,7 +35,7 @@ Construir una plataforma donde **cualquier persona, en 30 segundos**, pueda:
 1. **Buscar una obra** por código, distrito o entidad.
 2. **Ver su seguimiento** (línea de tiempo + presupuesto + proveedor adjudicado + semáforo de riesgo).
 3. **Comparar al proveedor** con otros del mismo rubro.
-4. **Compartir la obra** vía URL pública o QR.
+4. **Compartir la obra** vía URL pública.
 5. **Suscribirse** a alertas de su distrito o denunciar irregularidades.
 
 ---
@@ -44,7 +44,7 @@ Construir una plataforma donde **cualquier persona, en 30 segundos**, pueda:
 
 | Para… | ContrataIA Perú entrega… |
 |---|---|
-| **Ciudadanos** | Búsqueda en lenguaje natural, línea de tiempo tipo "tracking de pedido", QR público, sin login. |
+| **Ciudadanos** | Búsqueda en lenguaje natural, línea de tiempo tipo "tracking de pedido", URL pública, sin login. |
 | **Empresas** | Perfil técnico consolidado y visible, evita preparar dossiers desde cero. |
 | **Periodistas / veedores** | Comparativa lado-a-lado, exportación, código de obra para citar en investigaciones. |
 | **Administradores** | Panel para atender denuncias y mantener la calidad del contenido. |
@@ -60,7 +60,6 @@ Es el rol por defecto. **No requiere registro** para buscar y consultar.
 - Buscar obras por código, distrito o entidad compradora.
 - Ver el seguimiento de una obra (línea de tiempo + presupuesto + proveedor + semáforo).
 - Comparar 2–3 proveedores lado a lado.
-- Escanear QR público.
 - **Opcionalmente** dejar un email para:
   - Suscribirse a alertas de un distrito o entidad.
   - Recibir el `tracking_code` de una denuncia ciudadana.
@@ -127,10 +126,10 @@ Este es el flujo central del producto. Todo lo demás es accesorio.
    │  · SUNAT activo y habido                      │
    │  · 1 multa OSCE 2024                          │
    │  · Sin sanciones ambientales                  │
-   │  [ Resumen IA ] [ Ver perfil 360° ]           │
+   │  [ Ver perfil 360° ]                           │
    │                                               │
    │  [ Comparar con otras empresas ]              │
-   │  [ Compartir ] [ QR ] [ Denunciar ]           │
+   │  [ Compartir ] [ Denunciar ]                  │
    │  [ Suscribirme a este distrito ]              │
    └──────────────────────────────────────────────┘
 ```
@@ -138,22 +137,6 @@ Este es el flujo central del producto. Todo lo demás es accesorio.
 ### Comparador (lanzado desde el detalle)
 
 Selecciona 2 o 3 RUCs y muestra una tabla lado-a-lado:
-
-| Indicador | Empresa A | Empresa B | Empresa C |
-|---|---|---|---|
-| Estado SUNAT | Activo · Habido | Activo · Habido | Activo · No habido |
-| Sanciones OSCE activas | 0 | 1 | 3 |
-| Multas OSCE 2 últimos años | 0 | 1 | 5 |
-| Sanciones ambientales OEFA | 0 | 0 | 2 |
-| Deuda coactiva SUNAT | No | No | Sí |
-| Contratos previos en SEACE | 24 | 11 | 47 |
-| **Semáforo de riesgo** | 🟢 BAJO | 🟡 MEDIO | 🔴 ALTO |
-
-### QR público
-Cada página de detalle genera un QR que abre la misma URL pública. Pensado para fiscales, pegado en cartel de obra, o compartido por vecinos.
-
-### Resumen con IA (LLM)
-En la página de detalle, un párrafo generado por LLM resume en lenguaje claro qué significan los red-flags del proveedor adjudicado. Cacheado en `provider_snapshot` para no llamar al LLM en cada visita.
 
 ---
 
@@ -165,12 +148,24 @@ En la página de detalle, un párrafo generado por LLM resume en lenguaje claro 
 | 2 | Página de detalle de obra con línea de tiempo OCDS | Ciudadano |
 | 3 | Perfil 360° del proveedor con semáforo de riesgo | Ciudadano |
 | 4 | Comparador lado-a-lado de 2–3 proveedores | Ciudadano |
-| 5 | Resumen en lenguaje natural del proveedor (LLM) | Ciudadano |
-| 6 | QR público y URL compartible por obra | Ciudadano |
-| 7 | Suscripción a alertas de un distrito o entidad (magic link) | Ciudadano |
-| 8 | Denuncia ciudadana con `tracking_code` (puede ser anónima) | Ciudadano |
-| 9 | Registro y perfil público de empresa (magic link al RUC) | Empresa |
-| 10 | Panel de moderación de denuncias y empresas | Admin |
+| 5 | Suscripción a alertas de un distrito o entidad (magic link) | Ciudadano |
+| 6 | Denuncia ciudadana con `tracking_code` (puede ser anónima) | Ciudadano |
+| 7 | Registro y perfil público de empresa (magic link al RUC) | Empresa |
+| 8 | Panel de moderación de denuncias y empresas | Admin |
+
+| Indicador | Empresa A | Empresa B | Empresa C |
+|---|---|---|---|
+| Estado SUNAT | Activo · Habido | Activo · Habido | Activo · No habido |
+| Sanciones OSCE activas | 0 | 1 | 3 |
+| Multas OSCE 2 últimos años | 0 | 1 | 5 |
+| Sanciones ambientales OEFA | 0 | 0 | 2 |
+| Deuda coactiva SUNAT | No | No | Sí |
+| Contratos previos en SEACE | 24 | 11 | 47 |
+| **Semáforo de riesgo** | 🟢 BAJO | 🟡 MEDIO | 🔴 ALTO |
+
+### Comparador (lanzado desde el detalle)
+
+Selecciona 2 o 3 RUCs y muestra una tabla lado-a-lado:
 
 ---
 
@@ -202,7 +197,6 @@ Un solo proveedor agrega 4 fuentes oficiales con autenticación única:
 - **KYB cross-source** — `GET /pe/ruc/{ruc}` agrega todo lo anterior en un solo response
 
 ### Externas
-- **LLM (OpenAI o Anthropic Claude)** — para el resumen en lenguaje natural del proveedor.
 - **Resend** — envío de magic links y alertas por email (plan gratis 3,000/mes).
 
 ---
@@ -219,8 +213,7 @@ Stack ligero y monolítico para ejecutar en 11h y desplegar a producción en un 
 | ORM | **Prisma** | Migraciones tipadas + generador de cliente TypeScript. |
 | Cache externo | **latinfo.dev** | No necesitamos Redis — latinfo ya es la fuente cacheada. |
 | Email | **Resend** | Magic links y alertas. |
-| LLM | **OpenAI SDK** (o Anthropic) | Resumen en lenguaje natural. |
-| QR | **`qrcode` npm** | Generación lado servidor. |
+
 | Deploy | **Vercel** | Las bases del torneo lo mencionan; deploy en minutos. |
 
 > **Lo que SE descarta vs. propuesta inicial:** Spring Boot, Spring Security, Spring AI, Redis, S3, Docker, Nginx, GitHub Actions complejas. Cada uno suma horas de setup sin valor en el MVP.
@@ -232,9 +225,9 @@ Stack ligero y monolítico para ejecutar en 11h y desplegar a producción en un 
 - **HTTPS** forzado por Vercel.
 - **Magic link** con token de un solo uso y expiración corta (15 min) para `ROLE_EMPRESA` y `ROLE_ADMIN`.
 - **`ROLE_CIUDADANO` no autenticado**: todas las páginas de búsqueda y detalle son públicas. Solo la suscripción y la denuncia opcional dejan email (verificado por magic link).
-- **Rate limiting** por IP en las rutas de búsqueda y en el endpoint de resumen IA (para no quemar la cuota de latinfo y del LLM).
+- **Rate limiting** por IP en las rutas de búsqueda.
 - **Allowlist de emails admin** en variable de entorno.
-- **Variables sensibles** (API keys de latinfo, OpenAI, Resend) en variables de entorno de Vercel, nunca en el repo.
+- **Variables sensibles** (API keys de latinfo, Resend) en variables de entorno de Vercel, nunca en el repo.
 - **Solo personas jurídicas** en los datos consultados (RUC `20*`). Sin PII de personas naturales más allá del email del suscriptor.
 - **Denuncias anónimas** permitidas (`subscriber_id` nullable en `complaint`).
 
@@ -244,7 +237,7 @@ Stack ligero y monolítico para ejecutar en 11h y desplegar a producción en un 
 
 ```
                   ┌─────────────────────────┐
-                  │   Navegador / QR        │
+                  │   Navegador             │
                   │   (Ciudadano público)   │
                   └────────────┬────────────┘
                                │ HTTPS
@@ -253,7 +246,7 @@ Stack ligero y monolítico para ejecutar en 11h y desplegar a producción en un 
                   │  ┌───────────────────┐  │
                   │  │ App Router (RSC)  │  │  ← páginas públicas SEO-friendly
                   │  │ API Routes        │  │  ← búsqueda, suscripción, denuncia
-                  │  │ Server Actions    │  │  ← comparador, resumen IA
+                  │  │ Server Actions    │  │  ← comparador, suscripciones
                   │  └─────────┬─────────┘  │
                   └────────────┼────────────┘
                                │
@@ -261,9 +254,9 @@ Stack ligero y monolítico para ejecutar en 11h y desplegar a producción en un 
         │                      │                      │
         ▼                      ▼                      ▼
  ┌──────────────┐      ┌──────────────┐       ┌──────────────┐
- │ PostgreSQL   │      │ latinfo.dev  │       │ OpenAI / Resend │
- │ (Neon)       │      │ SEACE+OSCE+  │       │ Resumen IA +    │
- │ 6 entidades  │      │ SUNAT+OEFA   │       │ magic links     │
+ │ PostgreSQL   │      │ latinfo.dev  │       │ Resend          │
+ │ (Neon)       │      │ SEACE+OSCE+  │       │ Magic links +   │
+ │ 6 entidades  │      │ SUNAT+OEFA   │       │ alertas email   │
  └──────────────┘      └──────────────┘       └──────────────┘
 ```
 
@@ -275,13 +268,13 @@ El detalle de contenedores y componentes lo entrega `@architect` en `/docs/archi
 
 Ver [`/docs/erd.md`](./erd.md) y [`/docs/adr/ADR-001-modelo-de-datos.md`](./adr/ADR-001-modelo-de-datos.md).
 
-Resumen: **6 entidades** (`subscriber`, `subscription`, `provider_snapshot`, `tender_snapshot`, `alert`, `complaint`). El campo `tender_snapshot.ocid` es el **código público de la obra** que el ciudadano usa para buscar, compartir y generar QR.
+Resumen: **6 entidades** (`subscriber`, `subscription`, `provider_snapshot`, `tender_snapshot`, `alert`, `complaint`). El campo `tender_snapshot.ocid` es el **código público de la obra** que el ciudadano usa para buscar y compartir.
 
 ---
 
 ## 14. Beneficios
 
-**Ciudadanos** — Una sola URL/QR para entender una obra completa.
+**Ciudadanos** — Una sola URL para entender una obra completa.
 **Empresas** — Perfil consolidado sin tener que armar dossier en cada postulación.
 **Periodistas** — Comparador y código de obra estable para citar en investigaciones.
 **Administradores** — Panel único para moderar denuncias y mantener calidad.
