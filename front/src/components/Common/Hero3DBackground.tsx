@@ -1,67 +1,110 @@
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, MeshDistortMaterial } from '@react-three/drei';
-import { useRef, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-function FloatingShape({ position, color, scale = 1, speed = 1 }: { position: [number, number, number]; color: string; scale?: number; speed?: number }) {
-  return (
-    <Float speed={speed} rotationIntensity={0.6} floatIntensity={1.2}>
-      <mesh position={position} scale={scale}>
-        <icosahedronGeometry args={[1, 1]} />
-        <MeshDistortMaterial
-          color={color}
-          distort={0.35}
-          speed={1.5}
-          roughness={0.4}
-          metalness={0.1}
-          transparent
-          opacity={0.85}
-        />
-      </mesh>
-    </Float>
-  );
-}
+export default function Hero3DBackground() {
+  const mountRef = useRef<HTMLDivElement>(null);
 
-function ParticleField() {
-  const ref = useRef<THREE.Points>(null);
-  const count = 180;
-  const positions = useMemo(() => {
-    const arr = new Float32Array(count * 3);
+  useEffect(() => {
+    const el = mountRef.current;
+    if (!el) return;
+
+    // Scene
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, el.clientWidth / el.clientHeight, 0.1, 100);
+    camera.position.z = 6;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(el.clientWidth, el.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setClearColor(0x000000, 0);
+    el.appendChild(renderer.domElement);
+
+    // Lights
+    const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambient);
+    const dir = new THREE.DirectionalLight(0x86efac, 1);
+    dir.position.set(5, 5, 5);
+    scene.add(dir);
+    const point = new THREE.PointLight(0x22c55e, 0.5, 20);
+    point.position.set(-3, -2, 2);
+    scene.add(point);
+
+    // Floating icosahedra
+    const shapes: { mesh: THREE.Mesh; speed: number; offset: number }[] = [];
+    const shapeConfigs: [THREE.Vector3, string, number, number][] = [
+      [new THREE.Vector3(-3.2, 1.2, -1),  '#86EFAC', 0.7, 0.8],
+      [new THREE.Vector3(3.5, -0.8, -1.5), '#22C55E', 0.9, 1.1],
+      [new THREE.Vector3(-2.5, -1.5, 0),  '#16A34A', 0.5, 1.4],
+      [new THREE.Vector3(2.8, 1.5, -2),   '#4ADE80', 0.6, 0.9],
+      [new THREE.Vector3(0, 0.3, -3),     '#15803D', 1.2, 0.7],
+    ];
+
+    shapeConfigs.forEach(([pos, color, scale, speed]) => {
+      const geo = new THREE.IcosahedronGeometry(scale, 1);
+      const mat = new THREE.MeshStandardMaterial({
+        color,
+        roughness: 0.4,
+        metalness: 0.15,
+        transparent: true,
+        opacity: 0.82,
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.copy(pos);
+      scene.add(mesh);
+      shapes.push({ mesh, speed, offset: Math.random() * Math.PI * 2 });
+    });
+
+    // Particles
+    const count = 200;
+    const positions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 12;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 8;
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 6;
+      positions[i * 3]     = (Math.random() - 0.5) * 14;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 9;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 7;
     }
-    return arr;
+    const particleGeo = new THREE.BufferGeometry();
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const particleMat = new THREE.PointsMaterial({ size: 0.04, color: '#16A34A', transparent: true, opacity: 0.55 });
+    const particles = new THREE.Points(particleGeo, particleMat);
+    scene.add(particles);
+
+    // Resize
+    const handleResize = () => {
+      if (!el) return;
+      camera.aspect = el.clientWidth / el.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(el.clientWidth, el.clientHeight);
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Animation
+    let animId: number;
+    const clock = new THREE.Clock();
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+      shapes.forEach(({ mesh, speed, offset }) => {
+        mesh.rotation.x += 0.004 * speed;
+        mesh.rotation.y += 0.006 * speed;
+        mesh.position.y += Math.sin(t * speed + offset) * 0.002;
+      });
+      particles.rotation.y = t * 0.04;
+      particles.rotation.x = Math.sin(t * 0.1) * 0.05;
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', handleResize);
+      renderer.dispose();
+      if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
+    };
   }, []);
 
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.y = state.clock.elapsedTime * 0.04;
-      ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.1) * 0.05;
-    }
-  });
-
   return (
-    <points ref={ref}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={positions}
-          itemSize={3}
-          args={[positions, 3]}
-        />
-      </bufferGeometry>
-      <pointsMaterial size={0.04} color="#16A34A" transparent opacity={0.6} sizeAttenuation />
-    </points>
-  );
-}
-
-export default function Hero3DBackground() {
-  return (
-    <Canvas
-      camera={{ position: [0, 0, 6], fov: 50 }}
+    <div
+      ref={mountRef}
       style={{
         position: 'absolute',
         inset: 0,
@@ -69,20 +112,9 @@ export default function Hero3DBackground() {
         height: '100%',
         zIndex: 0,
         pointerEvents: 'none',
+        overflow: 'hidden',
       }}
-      dpr={[1, 1.5]}
-    >
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 5, 5]} intensity={0.8} />
-      <pointLight position={[-3, -2, 2]} intensity={0.3} color="#86EFAC" />
-
-      <ParticleField />
-
-      <FloatingShape position={[-3.2, 1.2, -1]} color="#86EFAC" scale={0.7} speed={0.8} />
-      <FloatingShape position={[3.5, -0.8, -1.5]} color="#22C55E" scale={0.9} speed={1.1} />
-      <FloatingShape position={[-2.5, -1.5, 0]} color="#16A34A" scale={0.5} speed={1.4} />
-      <FloatingShape position={[2.8, 1.5, -2]} color="#4ADE80" scale={0.6} speed={0.9} />
-      <FloatingShape position={[0, 0.3, -3]} color="#15803D" scale={1.2} speed={0.7} />
-    </Canvas>
+    />
   );
 }
+
