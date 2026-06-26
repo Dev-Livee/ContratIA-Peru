@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(npx create-vite@latest . --template react-ts)",
+      "Bash(echo '{}')",
+      "Bash(rm package.json 2>/dev/null; ls /Users/maycolrojas/Documents/GitHub/ContratIA-MVP)",
+      "Bash(npm install *)",
+      "Bash(npm run *)"
+    ],
+    "additionalDirectories": [
+      "/Users/maycolrojas/Documents/GitHub/ContratIA-MVP"
+    ]
+  }
+}
