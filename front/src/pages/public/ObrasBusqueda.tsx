@@ -13,6 +13,7 @@ import SkeletonCard from '@/components/Common/SkeletonCard';
 import EmptyState from '@/components/Common/EmptyState';
 import ErrorState from '@/components/Common/ErrorState';
 import VizMessage from '@/components/Common/VizMessage';
+import { VIZ_MESSAGES } from '@/components/Common/vizMessages';
 import { useObras } from '@/components/hooks/useObras';
 import { DISTRICTS, RUBROS, OBRA_STATUS } from '@/utils/constants';
 import { formatCurrency } from '@/utils/helpers';
@@ -99,7 +100,7 @@ export default function ObrasBusqueda() {
 
             {isLoading && (
               <Flex direction="column" align="center" py={8}>
-                <VizMessage pose="searching" message="Buscando la mejor información para ti..." size={100} />
+                <VizMessage pose="searching" message={VIZ_MESSAGES.searching} size={100} />
               </Flex>
             )}
 
@@ -111,7 +112,7 @@ export default function ObrasBusqueda() {
               <EmptyState
                 title="No encontré coincidencias"
                 description="Probemos otra búsqueda o cambia los filtros."
-                vizPose="curious"
+                vizPose="sitting"
               />
             )}
 

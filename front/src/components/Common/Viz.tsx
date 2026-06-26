@@ -2,16 +2,16 @@ import { Box, Image } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
 
 export type VizPose =
-  | 'greeting'    // Saludo — inicio de sesión
-  | 'thinking'    // Pensando — comparando empresas
-  | 'laptop'      // Con laptop — recomendación IA
-  | 'searching'   // Buscando — lupa
-  | 'celebrating' // Celebrando — registro exitoso
-  | 'waving'      // Saludando — bienvenida
-  | 'sitting'     // Sentado — sin proyectos
-  | 'curious'     // Curioso — sin resultados
-  | 'checkmark'   // Check — proceso completado
-  | 'meditating'; // Meditando — carga
+  | 'greeting'    // 🦊 Inicio de sesión — saluda con la pata
+  | 'celebrating' // 🎉 Registro exitoso — salta de alegría
+  | 'searching'   // 🔍 Buscando — lupa y guiño
+  | 'laptop'      // 💻 Laptop/tablet — analiza documentos
+  | 'thinking'    // 🤔 Comparando — dedo en el mentón
+  | 'sitting'     // 😕 Sin resultados / sin proyectos — sentado triste
+  | 'waving'      // 👋 Saludando / señalando
+  | 'checkmark'   // ✅ Proceso completado — sostiene check verde
+  | 'meditating'  // 🧘 Carga general — ojos cerrados, meditando
+  | 'error';      // 😅 Error de conexión — de espaldas
 
 const float = keyframes`
   0%, 100% { transform: translateY(0px) }
@@ -31,15 +31,15 @@ const wiggle = keyframes`
 
 const POSE_ANIMATION: Record<VizPose, string> = {
   greeting:    `${wiggle} 2s ease-in-out infinite`,
-  thinking:    `${pulse} 3s ease-in-out infinite`,
-  laptop:      `${float} 3s ease-in-out infinite`,
-  searching:   `${wiggle} 1.5s ease-in-out infinite`,
   celebrating: `${wiggle} 0.8s ease-in-out infinite`,
-  waving:      `${wiggle} 2s ease-in-out infinite`,
+  searching:   `${wiggle} 1.5s ease-in-out infinite`,
+  laptop:      `${float} 3s ease-in-out infinite`,
+  thinking:    `${pulse} 3s ease-in-out infinite`,
   sitting:     `${float} 4s ease-in-out infinite`,
-  curious:     `${pulse} 2.5s ease-in-out infinite`,
+  waving:      `${wiggle} 2s ease-in-out infinite`,
   checkmark:   `${pulse} 2s ease-in-out infinite`,
   meditating:  `${float} 3.5s ease-in-out infinite`,
+  error:       `${float} 4s ease-in-out infinite`,
 };
 
 interface VizProps {

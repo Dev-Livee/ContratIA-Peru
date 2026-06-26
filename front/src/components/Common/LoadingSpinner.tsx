@@ -1,12 +1,13 @@
 import { Flex } from '@chakra-ui/react';
 import VizMessage from './VizMessage';
+import { VIZ_MESSAGES } from './vizMessages';
 
 interface Props {
   label?: string;
   fullScreen?: boolean;
 }
 
-export default function LoadingSpinner({ label = 'Las mejores decisiones toman unos segundos más.', fullScreen }: Props) {
+export default function LoadingSpinner({ label = VIZ_MESSAGES.meditating, fullScreen }: Props) {
   return (
     <Flex
       direction="column"

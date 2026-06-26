@@ -11,7 +11,7 @@ interface Props {
   vizPose?: VizPose;
 }
 
-export default function EmptyState({ title, description, ctaLabel, onCta, vizPose = 'curious' }: Props) {
+export default function EmptyState({ title, description, ctaLabel, onCta, vizPose = 'sitting' }: Props) {
   return (
     <Box textAlign="center" py={12} px={8} bg="white" borderRadius="lg" borderWidth="1px" borderColor="gray.100">
       <VStack spacing={3}>
